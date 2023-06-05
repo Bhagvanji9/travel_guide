@@ -1,0 +1,33 @@
+main{
+    padding: 150px;
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    width: 80%;
+}
+.guide-profile{
+    width:80% ;
+    border: 2px solid rgb(155, 154, 154);
+    display: flex;
+    padding: 5px;
+}
+.profile-picture{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.profile-data{
+    margin-left: 10px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 5px;
+}
+.hire-btn button{
+    background-color: #0ba403;
+    border: none;
+    width: 80px;
+    height: 20px;
+}

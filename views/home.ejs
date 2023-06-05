@@ -1,0 +1,49 @@
+<%- include("include/head.ejs") %>
+
+    <link rel="stylesheet" href="http://localhost:3000/css/home.css">
+    </head>
+
+    <body>
+
+        <%- include ("include/nav.ejs")%>
+            <%if(isAuth){%>
+                <%if(role==="User" ){%>
+                    <li><a href="/user/guide">GUIDE LIST</a></li>
+
+                    <%}else if(role==="Guide" ){ %>
+                        <li><a href="/guide/make-post">POST</a></li>
+                        <%}%>
+                            <%}%>
+                                </ul>
+                                <%- include ("include/loginOrLogout.ejs")%>
+                                    <div class="section">
+                                        <section>
+                                            <%for(let post of posts){%>
+                                                <div class="post">
+                                                    <div class="place">
+                                                        <b>
+                                                            <%=post.place%>
+                                                        </b>
+                                                    </div>
+                                                    <br>
+                                                    <div class="palce-image"><img
+                                                            src="https://images.odishatv.in/uploadimage/library/16_9/16_9_0/IMAGE_1661694788.webp"
+                                                            alt="ahmedabad">
+                                                    </div>
+                                                    <br><br>
+                                                    <div class="description">
+                                                        <b>About place:</b>
+                                                        <%=post.description%>
+                                                    </div><br><br>
+                                                    <div class="rating"></div>
+                                                    <div class="comment">
+                                                        <label for="comment"><b>Add comment:</b></label>
+                                                        <input type="text">
+                                                    </div>
+                                                </div>
+                                                <%}%>
+                                        </section>
+                                    </div>
+    </body>
+
+    </html>

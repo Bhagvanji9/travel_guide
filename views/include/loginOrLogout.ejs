@@ -1,0 +1,10 @@
+<ul class="login-button">
+    <%if(!locals.isAuth){%>
+        <li><a href="/registeration">Sign Up</a></li>
+        <li><a href="/login">Login</a></li>
+        <%} else{%>
+            <li><a href="/logout">Logout</a></li>
+            <%}%>
+</ul>
+</nav>
+</header>

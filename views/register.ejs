@@ -1,0 +1,62 @@
+<%- include("include/head.ejs") %>
+    <link rel="stylesheet" href="http://localhost:3000/css/user.css">
+    </head>
+
+    <body>
+        <section>
+            <div class="login-form">
+                <center>
+                    <%if(err){%>
+                        <span style="color:red;border: 1px solid #000;padding: 5px;margin-bottom: 10px;">
+                            <b>
+                                User already exists
+                            </b>
+                        </span>
+                        <%}%>
+                </center><br>
+                <form action="/registeration" method="POST">
+                    <div class="container">
+                        <center>
+                            <h1>
+                                Registeration
+                            </h1>
+                        </center>
+                        <hr>
+                        <label> Firstname </label>
+                        <input type="text" name="firstname" placeholder="Firstname" size="15" required />
+                        <label> Lastname: </label>
+                        <input type="text" name="lastname" placeholder="Lastname" size="15" required />
+                        <div id="gender">
+                            <label>
+                                Gender :
+                            </label><br>
+                            <input type="radio" value="Male" name="gender" checked> Male
+                            <input type="radio" value="Female" name="gender"> Female
+                            <input type="radio" value="Other" name="gender"> Other
+
+                        </div>
+                        <div id="role">
+                            <label>
+                                Role :
+                            </label><br>
+                            <input type="radio" value="User" name="role" checked> User
+                            <input type="radio" value="Guide" name="role"> Guide
+                        </div>
+                        <input type="text" name="phone" placeholder="phone no." size="10" / required>
+                        <label for="address"><b>Current Address :</b></label>
+                        <input type="text" name="address">
+
+                        <label for="email"><b>Email</b></label>
+                        <input type="text" placeholder="Enter Email" name="email" required>
+
+                        <label for="psw"><b>Password</b></label>
+                        <input type="password" placeholder="Enter Password" name="psw" required>
+
+                        <button type="submit" class="registerbtn">Register</button>
+                        Already have account? <a href="/login">Login</a>
+                </form>
+            </div>
+        </section>
+    </body>
+
+    </html>

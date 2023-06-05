@@ -1,0 +1,29 @@
+<%- include("include/head.ejs") %>
+    <link rel="stylesheet" href="http://localhost:3000/css/make-post.css">
+
+
+    </head>
+
+    <body>
+        <main>
+            <div class="make-post">
+                <form action="/guide/make-post" method="post">
+                    <center>
+                        <h1>Post</h1>
+                    </center>
+                    <hr>
+                    <label for="place"><b>Place:</b></label>
+                    <input type="text" name="place" id="placeName" required>
+                    <label for="photo"><b>Add Image:</b></label>
+                    <input type="file" accept="Image/*" name="photo" id="photo" required> <br><br>
+                    <label for="description"><b>Add description:</b></label>
+                    <textarea name="description" id="description" cols="30" rows="10"></textarea>
+                    <div class="add-post">
+                        <button type="submit" class="postbtn">Post</button>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </body>
+
+    </html>

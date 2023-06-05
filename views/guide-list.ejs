@@ -1,0 +1,46 @@
+<%- include("include/head.ejs") %>
+    <link rel="stylesheet" href="http://localhost:3000/css/guide.css">
+    </head>
+
+    <body>
+        <%- include("include/nav.ejs") %>
+
+            <li><a href="/user/guide">GUIDE LIST</a></li>
+
+            </ul>
+            <%- include ("include/loginOrLogout.ejs")%>
+                <main>
+                    <%for(let user of users){%>
+                        <%if(user.role==="Guide" ) {%>
+
+                            <div class="guide-profile">
+                                <div class="profile-picture"><img
+                                        src="data:image/png;base64,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"
+                                        alt=""></div>
+                                <div class="profile-data">
+                                    <div class="guide-name"><b>Name:</b>
+                                        <%=user.firstname%>
+
+                                            <%=user.lastname%>
+                                    </div>
+                                    <div class="guide-city"><b>City:</b>
+                                        <%=user.address%>
+                                    </div>
+                                    <div class="guide-rating"><b>Rating:</b> 5/5</div>
+                                    <div class="extra"><b>About:</b> Lorem, ipsum dolor sit amet consectetur adipisicing
+                                        elit.
+                                        Cum,
+                                        vitae? Lorem
+                                        ipsum dolor sit amet consectetur adipisicing.g,g;j,k;glhjkg;lhmkj;glhkm
+                                    </div>
+                                    <div class="hire-btn">
+                                        <button>Hire</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <% }%>
+                                <% }%>
+                </main>
+    </body>
+
+    </html>

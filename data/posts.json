@@ -1,0 +1,9 @@
+{
+  "posts": [
+    { "place": "V", "photo": "facebook.svg", "description": "ZCZ" },
+    { "place": "abc", "photo": "facebook.svg", "description": "DFGH" },
+    { "place": "bbbbb", "photo": "facebook.svg", "description": "DRG" },
+    { "place": "scvbnvm", "photo": "facebook.svg", "description": "xcvb" },
+    { "place": "abc", "photo": "facebook.svg", "description": "GVG" }
+  ]
+}

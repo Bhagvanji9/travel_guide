@@ -1,0 +1,27 @@
+
+main{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+.make-post{
+    width: 40%;
+    margin-top: 30px;
+}
+
+input[type=text],textarea,button {
+    padding: 15px 0px;
+    padding-left: 5px;
+    margin: 5px 0 15px 0;
+    display: inline-block;
+    border: none;
+    width: 100%;
+}
+.add-post{
+    display: flex;
+    justify-content: center;
+}
+button{
+    width: 50%;
+    background: #33ab04;
+}
