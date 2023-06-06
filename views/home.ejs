@@ -6,12 +6,11 @@
     <body>
 
         <%- include ("include/nav.ejs")%>
-            <%if(isAuth){%>
-                <%if(role==="User" ){%>
-                    <li><a href="/user/guide">GUIDE LIST</a></li>
-
-                    <%}else if(role==="Guide" ){ %>
-                        <li><a href="/guide/make-post">POST</a></li>
+            <%if(role){%>
+                <%if(role==="Guide"){%>
+                    <li><a href="/guide/make-post">POST</a></li>
+                    <%}else{%>
+                        <li><a href="/user/guide">GUIDE LIST</a></li>
                         <%}%>
                             <%}%>
                                 </ul>
@@ -41,6 +40,8 @@
                                                         <input type="text">
                                                     </div>
                                                 </div>
+
+
                                                 <%}%>
                                         </section>
                                     </div>

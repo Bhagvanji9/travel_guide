@@ -1,16 +1,26 @@
 const fs = require("fs");
-
+const jwt = require("jsonwebtoken");
 const path = require("path");
 const bcrypt = require("bcrypt");
+require("dotenv").config();
 
 const users = require("../data/user.json").users;
+const { posts } = require("../routes/guide.js");
+const userJsonDataPath = path.join(__dirname, "../", "data", "user.json");
 
-const posts = require("../data/posts.json").posts;
+exports.getHomePage = (req, res, next) => {
+  const isAuth = req.cookies.token;
 
-const jsonDataPath = path.join(__dirname, "../", "data", "user.json");
-
-exports.goToHomePage = (req, res) => {
-  res.render("home");
+  let role;
+  if (req.body.user === undefined) {
+    role = undefined;
+  } else {
+    role = req.body.user.role;
+  }
+  fs.readFile(userJsonDataPath, (err, data) => {
+    const users = JSON.parse(data.toString()).users;
+    res.render("home", { posts, isAuth, users, role });
+  });
 };
 
 exports.getRegisterPage = (req, res) => {
@@ -25,23 +35,20 @@ exports.getRegisterData = async (req, res, next) => {
   ) {
     res.render("register", { err: true });
   } else {
-    fs.readFile(jsonDataPath, "utf8", async (err, jsonData) => {
+    fs.readFile(userJsonDataPath, "utf8", async (err, jsonData) => {
       if (!err) {
         const { psw } = req.body;
         const saltRounds = 10;
         const salt = bcrypt.genSaltSync(saltRounds);
         const hash = await bcrypt.hash(psw, salt);
-
         const postsArray = JSON.parse(jsonData.toString()).users;
         const getData = req.body;
         getData.psw = hash;
         postsArray.push(getData);
-
         const postsString = '{"users":' + JSON.stringify(postsArray) + "}";
-
-        fs.writeFile(jsonDataPath, postsString, "utf8", (err, data) => {
+        fs.writeFile(userJsonDataPath, postsString, "utf8", (err, data) => {
           if (err) {
-            throw err;
+            console.log(err);
           }
           res.redirect("/");
         });
@@ -51,23 +58,24 @@ exports.getRegisterData = async (req, res, next) => {
 };
 
 exports.login = (req, res) => {
-  fs.readFile(jsonDataPath, async (err, data) => {
+  fs.readFile(userJsonDataPath, async (err, data) => {
     if (!err) {
       const users = JSON.parse(data.toString()).users;
       let validuser = users.find((element) => {
         return element.email === req.body.email;
       });
-
       if (validuser && (await bcrypt.compare(req.body.psw, validuser.psw))) {
-        req.session.isAuth = true;
-        req.session.role = validuser.role;
+        const secret = process.env.JWT_TOKEN_ACCESS;
+        const token = jwt.sign(
+          {
+            isAuth: true,
+            role: validuser.role,
+          },
+          secret,
+          { expiresIn: "3m" }
+        );
         console.log("login successfully!");
-
-        res.render("home", {
-          posts,
-          isAuth: req.session.isAuth,
-          role: req.session.role,
-        });
+        res.cookie("token", token, { httpOnly: true }).redirect("/");
       } else {
         res.redirect("login");
       }
@@ -76,14 +84,8 @@ exports.login = (req, res) => {
 };
 
 exports.getLoginPage = (req, res) => {
-  res.render("login", { posts });
+  res.render("login");
 };
 exports.logout = (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      console.log("Error destroying session:", err);
-    } else {
-      res.redirect("/");
-    }
-  });
+  res.clearCookie("token").redirect("/");
 };
