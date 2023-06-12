@@ -57,3 +57,16 @@ section {
 .section{
     padding-top:65px;  
 }
+.error {
+    margin: auto;
+    width: 25%;
+    border: 1px solid #4771fa;
+    padding: 0.5rem;
+    border-radius: 3px;
+    background: #b9c9ff;
+    text-align: center;
+    border-color: red;
+    background: rgb(207, 156, 156);
+    color: rgb(214, 18, 18);
+}
+

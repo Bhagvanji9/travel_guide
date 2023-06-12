@@ -7,7 +7,7 @@
     <body>
         <main>
             <div class="make-post">
-                <form action="/guide/make-post" method="post">
+                <form action="/guide/make-post" method="post" enctype="multipart/form-data">
                     <center>
                         <h1>Post</h1>
                     </center>
@@ -15,7 +15,7 @@
                     <label for="place"><b>Place:</b></label>
                     <input type="text" name="place" id="placeName" required>
                     <label for="photo"><b>Add Image:</b></label>
-                    <input type="file" accept="Image/*" name="photo" id="photo" required> <br><br>
+                    <input type="file" name="image" id="photo" required> <br><br>
                     <label for="description"><b>Add description:</b></label>
                     <textarea name="description" id="description" cols="30" rows="10"></textarea>
                     <div class="add-post">

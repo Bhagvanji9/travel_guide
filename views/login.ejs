@@ -4,25 +4,29 @@
     </head>
 
     <body>
-        <section>
-
-            <div class="login-form">
-                <form action="/login" method="post">
-                    <div class="container">
-                        <center>
-
-                            <h1> User Login</h1>
-                        </center>
-                        <hr>
-                        <label for="email"><b>Email</b></label>
-                        <input type="text" placeholder="Enter Email" name="email" required>
-
-                        <label for="psw"><b>Password</b></label>
-                        <input type="password" placeholder="Enter Password" name="psw" required>
-                        <button type="submit" class="registerbtn">Login</button>
-                        Don't have account? <a href="/registeration">Sign Up</a>
-                    </div>
-                </form>
+        <%if(error){%>
+            <div class="error">
+                <%= error%>
             </div>
-        </section>
+            <%}%>
+                <section>
+                    <div class="login-form">
+                        <form action="/login" method="post">
+                            <div class="container">
+                                <center>
+
+                                    <h1> User Login</h1>
+                                </center>
+                                <hr>
+                                <label for="email"><b>Email</b></label>
+                                <input type="text" placeholder="Enter Email" name="email" required>
+
+                                <label for="psw"><b>Password</b></label>
+                                <input type="password" placeholder="Enter Password" name="psw" required>
+                                <button type="submit" class="registerbtn">Login</button>
+                                Don't have account? <a href="/registeration">Sign Up</a>
+                            </div>
+                        </form>
+                    </div>
+                </section>
     </body>

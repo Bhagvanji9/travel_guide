@@ -9,7 +9,6 @@
             <%if(isAuth){%>
                 <%if(role==="User" ){%>
                     <li><a href="/user/guide">GUIDE LIST</a></li>
-
                     <%}else if(role==="Guide" ){ %>
                         <li><a href="/guide/make-post">POST</a></li>
                         <%}%>
@@ -26,9 +25,8 @@
                                                         </b>
                                                     </div>
                                                     <br>
-                                                    <div class="palce-image"><img
-                                                            src="https://images.odishatv.in/uploadimage/library/16_9/16_9_0/IMAGE_1661694788.webp"
-                                                            alt="ahmedabad">
+                                                    <div class="palce-image"><img src=<%=post.image%>
+                                                        alt=<%=post.place%>>
                                                     </div>
                                                     <br><br>
                                                     <div class="description">

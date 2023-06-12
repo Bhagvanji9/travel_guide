@@ -1,28 +1,49 @@
 const express = require("express");
-const path = require("path");
-const fs = require("fs");
 const router = express.Router();
-const { posts } = require("../routes/guide.js");
-const userJsonDataPath = path.join(__dirname, "../", "data", "user.json");
 const homeController = require("../controller/homeController");
+const { check, body } = require("express-validator");
 
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
 
-router.get("/", (req, res, next) => {
-  const isAuth = req.session.isAuth;
-  fs.readFile(userJsonDataPath, (err, data) => {
-    const users = JSON.parse(data.toString()).users;
+router.get("/", homeController.getHomePage);
 
-    res.render("home", { posts, isAuth, users });
-  });
-});
-
-router.post("/registeration", homeController.getRegisterData);
+router.post(
+  "/registeration",
+  [
+    check("email")
+      .isEmail()
+      .withMessage("Invalid Email,Please enter corrent...")
+      .trim(),
+    body("psw")
+      .isLength({ min: 8 })
+      .withMessage("Password must be at least 8 characters long")
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/
+      )
+      .withMessage(
+        "Password must contain at least one uppercase letter, one lowercase letter, one special symbol, and one number"
+      ),
+    body("confirmPsw")
+      .custom((value, { req }) => value !== req.body.password)
+      .withMessage("Passwords do not match"),
+  ],
+  homeController.getRegisterData
+);
 
 router.get("/registeration", homeController.getRegisterPage);
 
-router.post("/login", homeController.login);
+router.post(
+  "/login",
+  [
+    body("email")
+      .notEmpty()
+      .normalizeEmail()
+      .withMessage("Please enter Email!"),
+    body("psw").notEmpty().withMessage("Please Enter Password!"),
+  ],
+  homeController.login
+);
 
 router.get("/login", homeController.getLoginPage);
 
