@@ -1,14 +1,15 @@
-const path = require("path");
-const fs = require("fs");
-const jsonDataPath = path.join(__dirname, "../", "data", "user.json");
+const User = require("../model/user");
 
-exports.getGuideList = (req, res) => {
-  fs.readFile(jsonDataPath, (err, data) => {
-    const users = JSON.parse(data.toString()).users;
-
+exports.getGuideList = async (req, res) => {
+  try {
+    const users = await User.find();
     res.render("guide-list", {
       users,
       isAuth: req.session.isAuth,
     });
-  });
+  } catch (err) {
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    return next(error);
+  }
 };

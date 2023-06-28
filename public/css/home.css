@@ -10,6 +10,46 @@ input[type=text] {
     width: 450px;
     height: 225px;
 }
-.section *{
+section {
+    text-align: justify;
+}
+.post{
+   height: 500px;
+   width: 450px;
+   border: 1px solid black;
+   padding: 10px;
+}
+.actions{
+    display: flex;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.pages {
+    margin-top: 2rem;
     text-align: center;
 }
+
+.pages a {
+    text-decoration: none;
+    color: #00695c;
+    padding: 0.5rem;
+    border: 1px solid #00695c;
+    margin: 0 0.5rem;
+}
+
+.pages a:hover,
+.pages a:active {
+    background: #007a3d;
+    color: white;
+}
+
+section{
+    display: flex;
+}
+a.active {
+    background-color: #007a3d;
+    color: rgb(255, 255, 255);
+ }

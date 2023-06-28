@@ -25,7 +25,7 @@ main{
     flex-direction: column;
     row-gap: 5px;
 }
-.hire-btn button{
+.contact button{
     background-color: #0ba403;
     border: none;
     width: 80px;

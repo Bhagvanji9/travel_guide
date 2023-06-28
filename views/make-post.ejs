@@ -9,21 +9,28 @@
             <div class="make-post">
                 <form action="/guide/make-post" method="post" enctype="multipart/form-data">
                     <center>
-                        <h1>Post</h1>
+                        <h1>
+                            <%= action %>
+                        </h1>
                     </center>
                     <hr>
                     <label for="place"><b>Place:</b></label>
-                    <input type="text" name="place" id="placeName" required>
+                    <input type="text" name="place" id="placeName" required value=<%=action=="Edit Post" ?
+                        witchPost.place : '' %>>
                     <label for="photo"><b>Add Image:</b></label>
-                    <input type="file" name="image" id="photo" required> <br><br>
+                    <input type="file" accept="image" name="image" id="photo" required> <br><br>
                     <label for="description"><b>Add description:</b></label>
-                    <textarea name="description" id="description" cols="30" rows="10"></textarea>
+                    <textarea name="description" id="description" cols="30"
+                        rows="10"><%=action=='Edit Post' ? witchPost.description : '' %> </textarea>
+                    <input type="hidden" id="postId" name="postId" value=<%=action=="Edit Post" ? witchPost._id : '' %>>
                     <div class="add-post">
-                        <button type="submit" class="postbtn">Post</button>
+                        <button type="submit" value="Post" class="postbtn">Post</button>
                     </div>
                 </form>
             </div>
         </main>
+
+        <script src="/JS/helper.js"></script>
     </body>
 
     </html>

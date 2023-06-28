@@ -1,13 +1,19 @@
 const express = require("express");
 const router = express.Router();
-const homeController = require("../controller/homeController");
+const {
+  getHomePage,
+  getLoginPage,
+  getRegisterData,
+  getRegisterPage,
+  login,
+  logout,
+} = require("../controller/homeController");
 const { check, body } = require("express-validator");
 
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
 
-router.get("/", homeController.getHomePage);
-
+router.get("/", getHomePage);
 router.post(
   "/registeration",
   [
@@ -28,10 +34,10 @@ router.post(
       .custom((value, { req }) => value !== req.body.password)
       .withMessage("Passwords do not match"),
   ],
-  homeController.getRegisterData
+  getRegisterData
 );
 
-router.get("/registeration", homeController.getRegisterPage);
+router.get("/registeration", getRegisterPage);
 
 router.post(
   "/login",
@@ -42,11 +48,11 @@ router.post(
       .withMessage("Please enter Email!"),
     body("psw").notEmpty().withMessage("Please Enter Password!"),
   ],
-  homeController.login
+  login
 );
 
-router.get("/login", homeController.getLoginPage);
+router.get("/login", getLoginPage);
 
-router.get("/logout", homeController.logout);
+router.get("/logout", logout);
 
 module.exports = router;

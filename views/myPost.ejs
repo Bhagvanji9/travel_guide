@@ -1,0 +1,46 @@
+<%- include("include/head.ejs") %>
+    <link rel="stylesheet" href="http://localhost:3000/css/home.css">
+    </head>
+
+    <body>
+        <%- include ("include/nav.ejs")%>
+            <li><a href="/guide/make-post">POST</a></li>
+            <li><a href="/guide/myPost">My Post</a></li>
+            </ul>
+            <%- include ("include/loginOrLogout.ejs")%>
+                <div class="section">
+                    <section>
+                        <%for(let post of posts){%>
+                            <div class="post">
+                                <div class="place">
+                                    <b>
+                                        <%=post.place%>
+                                    </b>
+                                </div>
+                                <br>
+                                <div class="palce-image"><img src="http://localhost:3000/images/<%=post.imageURL%>"
+                                        alt=<%=post.place%> >
+                                </div>
+                                <br>
+                                <div class="description">
+                                    <b>About place:</b><br>
+                                    <%=post.description%>
+                                </div>
+                                <br><br>
+                                <div class="actions">
+
+
+                                    <button class="delete" data-postid=<%=post._id%>>delete</button>
+                                    <button class="update" data-postid=<%=post._id%>>Update</button>
+                                </div>
+                            </div>
+                            <%}%>
+                    </section>
+                </div>
+                <%- include ("./include/pages.ejs"),{currentPage:currentPage, totalPosts:totalPosts,
+                    hasNextPage:hasNextPage, hasPreviousPage:hasPreviousPage, nextPage:nextPage,
+                    previousPage:previousPage, lastPage:lastPage}%>
+                    <script src="/JS/helper.js"></script>
+    </body>
+
+    </html>

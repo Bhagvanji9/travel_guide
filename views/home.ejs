@@ -11,6 +11,7 @@
                     <li><a href="/user/guide">GUIDE LIST</a></li>
                     <%}else if(role==="Guide" ){ %>
                         <li><a href="/guide/make-post">POST</a></li>
+                        <li><a href="/guide/myPost">My Post</a></li>
                         <%}%>
                             <%}%>
                                 </ul>
@@ -25,23 +26,26 @@
                                                         </b>
                                                     </div>
                                                     <br>
-                                                    <div class="palce-image"><img src=<%=post.image%>
-                                                        alt=<%=post.place%>>
+                                                    <div class="palce-image"><img
+                                                            src="http://localhost:3000/images/<%=post.imageURL%>"
+                                                            alt=<%=post.place%> >
+                                                    </div>
+                                                    <br>
+                                                    <div class="description">
+                                                        <b>About place:</b><br>
+                                                        <%=post.description%>
                                                     </div>
                                                     <br><br>
-                                                    <div class="description">
-                                                        <b>About place:</b>
-                                                        <%=post.description%>
-                                                    </div><br><br>
-                                                    <div class="rating"></div>
-                                                    <div class="comment">
-                                                        <label for="comment"><b>Add comment:</b></label>
-                                                        <input type="text">
-                                                    </div>
+
                                                 </div>
                                                 <%}%>
                                         </section>
                                     </div>
+                                    <%- include ("./include/pages.ejs"),{currentPage:currentPage, totalPosts:totalPosts,
+                                        hasNextPage:hasNextPage, hasPreviousPage:hasPreviousPage, nextPage:nextPage,
+                                        previousPage:previousPage, lastPage:lastPage}%>
+
+
     </body>
 
     </html>

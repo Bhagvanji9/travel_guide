@@ -1,15 +1,35 @@
-const fs = require("fs");
-const path = require("path");
 const bcrypt = require("bcrypt");
-const users = require("../data/user.json").users;
-const posts = require("../data/posts.json").posts;
-const jsonDataPath = path.join(__dirname, "../", "data", "user.json");
-const { validationResult } = require("express-validator");
+const { validationResult, Result } = require("express-validator");
+const User = require("../model/user");
+const Post = require("../model/post");
 
-exports.getHomePage = (req, res) => {
-  const isAuth = req.session.isAuth;
-  const role = req.session.role;
-  res.render("home", { posts, isAuth, role });
+const postInOnePage = 2;
+exports.getHomePage = async (req, res, next) => {
+  try {
+    const isAuth = req.session.isAuth;
+    const page = +req.query.page || 1;
+    const role = req.session.role;
+    const numberOfPost = await Post.find().count();
+    const posts = await Post.find()
+      .skip((page - 1) * postInOnePage)
+      .limit(postInOnePage);
+    return res.render("home", {
+      posts,
+      isAuth,
+      role,
+      currentPage: page,
+      totalPosts: numberOfPost,
+      hasNextPage: postInOnePage * page < numberOfPost,
+      hasPreviousPage: page > 1,
+      nextPage: page + 1,
+      previousPage: page - 1,
+      lastPage: Math.ceil(numberOfPost / postInOnePage),
+    });
+  } catch (err) {
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    return next(error);
+  }
 };
 
 exports.getRegisterPage = (req, res) => {
@@ -22,85 +42,89 @@ exports.getRegisterPage = (req, res) => {
   res.render("register", { error: errorMessage });
 };
 
-exports.getRegisterData = async (req, res) => {
-  error = validationResult(req);
+exports.getRegisterData = async (req, res, next) => {
+  let error = validationResult(req);
   if (!error.isEmpty()) {
     return res.status(422).render("register", {
       error: error.array()[0].msg,
     });
   }
 
-  if (
-    users.find((user) => {
-      return user.email == req.body.email;
-    })
-  ) {
+  const isUserExists = await User.findOne({ email: req.body.email });
+
+  if (isUserExists) {
     req.flash("error", "E-Mail exists already,enter other..");
     res.redirect("/registeration");
   } else {
-    fs.readFile(jsonDataPath, "utf8", async (err, jsonData) => {
-      if (!err) {
-        const { psw } = req.body;
-        const saltRounds = 10;
-        const salt = bcrypt.genSaltSync(saltRounds);
-        const hash = await bcrypt.hash(psw, salt);
-        const postsArray = JSON.parse(jsonData.toString()).users;
-        const getData = req.body;
-        getData.psw = hash;
-        postsArray.push(getData);
-        delete getData.confirmPsw;
-        const postsString = '{"users":' + JSON.stringify(postsArray) + "}";
+    try {
+      const { psw } = req.body;
+      const salt = bcrypt.genSaltSync(10);
+      const hash = await bcrypt.hash(psw, salt);
+      const getData = req.body;
+      getData.psw = hash;
+      delete getData.confirmPsw;
+      const newUser = new User(getData);
+      newUser.save();
 
-        fs.writeFile(jsonDataPath, postsString, "utf8", (err, data) => {
-          if (err) {
-            throw err;
-          }
-          res.redirect("/");
-        });
-      }
-    });
+      res.redirect("/");
+    } catch (err) {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    }
   }
 };
 
-exports.login = (req, res) => {
+exports.login = async (req, res, next) => {
   error = validationResult(req);
   if (!error.isEmpty()) {
     return res.status(422).render("login", {
       error: error.array()[0].msg,
     });
   }
-  fs.readFile(jsonDataPath, async (err, data) => {
-    if (!err) {
-      const users = JSON.parse(data.toString()).users;
-      let validuser = users.find((element) => {
-        return element.email === req.body.email;
+  const isValidUser = await User.find({ email: req.body.email });
+
+  if (isValidUser.length == 0) {
+    req.flash("error", "Invalid email!");
+    return res.redirect("/login");
+  }
+
+  try {
+    const isMatch = await bcrypt.compare(req.body.psw, isValidUser[0].psw);
+
+    if (isMatch) {
+      req.session.isAuth = true;
+      req.session._id = isValidUser[0]._id;
+      req.session.role = isValidUser[0].role;
+
+      const isAuth = req.session.isAuth;
+      const page = +req.query.page || 1;
+      const role = req.session.role;
+      const numberOfPost = await Post.find().count();
+      const posts = await Post.find()
+        .skip((page - 1) * postInOnePage)
+        .limit(postInOnePage);
+      return res.render("home", {
+        posts,
+        isAuth,
+        role,
+        currentPage: page,
+        totalPosts: numberOfPost,
+        hasNextPage: postInOnePage * page < numberOfPost,
+        hasPreviousPage: page > 1,
+        nextPage: page + 1,
+        previousPage: page - 1,
+        lastPage: Math.ceil(numberOfPost / postInOnePage),
       });
-      if (!validuser) {
-        req.flash("error", "Invalid email!");
-        return res.redirect("/login");
-      }
-      bcrypt
-        .compare(req.body.psw, validuser.psw)
-        .then((isMatch) => {
-          if (isMatch) {
-            req.session.isAuth = true;
-            req.session.role = validuser.role;
-            return res.render("home", {
-              posts,
-              isAuth: req.session.isAuth,
-              role: req.session.role,
-            });
-          } else {
-            req.flash("error", "Invalid Password!,please enter valid password");
-            res.redirect("/login");
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-          res.redirect("/login");
-        });
+    } else {
+      req.flash("error", "Invalid Password!,please enter valid password");
+      res.redirect("/login");
     }
-  });
+  } catch (err) {
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    return next(error);
+  }
 };
 
 exports.getLoginPage = (req, res) => {
@@ -113,12 +137,13 @@ exports.getLoginPage = (req, res) => {
   res.render("login", { error: errorMessage });
 };
 
-exports.logout = (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      console.log("Error destroying session:", err);
-    } else {
-      res.redirect("/");
-    }
-  });
+exports.logout = async (req, res) => {
+  try {
+    await req.session.destroy();
+    res.redirect("/");
+  } catch (err) {
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    return next(error);
+  }
 };
