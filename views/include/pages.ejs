@@ -1,22 +1,26 @@
 <div class="pages">
     <% if (currentPage !==1) { %>
-        <a href="?page=1">1</a>
+        <a href="<%= isFilter ? `?query=${query}` : '' %><%= isFilter ? '&' : '?'%>page=1">1
+        </a>
         <% } %>
             <% if (hasPreviousPage) { %>
-                <a href="?page=<%= previousPage %>">
+                <a href="<%= isFilter ? `?query=${query}` : '' %><%= isFilter ? '&' : '?' %>page=<%= previousPage %>">
                     Previous
                 </a>
                 <% } %>
-                    <a href="?page=<%= currentPage %>" class="active">
+                    <a href="<%= isFilter ? `?query=${query}` : '' %><%= isFilter ? '&' : '?'%>page=<%= currentPage %>"
+                        class="active">
                         <%= currentPage %>
                     </a>
                     <% if (hasNextPage) { %>
-                        <a href="?page=<%= nextPage %>">
+                        <a
+                            href="<%= isFilter ? `?query=${query}` : '' %><%= isFilter ? '&' : '?'%>page=<%= nextPage %>">
                             Next
                         </a>
                         <% } %>
                             <% if (lastPage !==currentPage ) { %>
-                                <a href="?page=<%= lastPage %>">
+                                <a
+                                    href="<%= isFilter ? `?query=${query}` : '' %><%= isFilter ? '&' : '?'%>page=<%= lastPage %>">
                                     <%= lastPage %>
                                 </a>
                                 <% } %>

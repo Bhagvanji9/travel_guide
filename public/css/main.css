@@ -11,13 +11,12 @@ body{
     width: 100%;
 }
 header{
-    position: relative;
     width: 100%;
-    /* margin-bottom: 50px; */
     position: fixed;
+    top: 0;
 }
 .main-nav{
-    background-color:#a1eca5;
+    background: linear-gradient(to right, rgba(106, 17, 203, 0.9), rgba(37, 117, 252, 0.9));
     height: 60px;
     border-bottom: 1px solid #000;
     width: 100%;
@@ -38,7 +37,7 @@ header{
 }
 .main-header ul li a {
     text-decoration: none;
-    color: #000000;
+    color: #ffffff;
 }
 .login-button{
     display: flex;
@@ -47,16 +46,13 @@ header{
 }
 section {
     padding: 30px;
-    display: grid;
+    display: flex   ;
     gap: 20px;
     grid-template-columns: auto auto;
     justify-content: center;
-    align-items: center;
     
 }
-.section{
-    padding-top:65px;  
-}
+
 .error {
     margin: auto;
     width: 25%;
