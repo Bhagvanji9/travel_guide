@@ -29,3 +29,13 @@ updateButton.forEach((element) => {
     window.location = "http://localhost:3000/guide/edit/" + postId;
   });
 });
+
+const likeButton = document.querySelectorAll(".like svg");
+
+likeButton.forEach((element) => {
+  const parent = element.parentElement.parentElement;
+  const postId = parent.querySelector("#postId").value;
+  element.addEventListener("click", async () => {
+    window.location = "http://localhost:3000/" + element.id + "/" + postId;
+  });
+});

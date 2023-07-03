@@ -1,19 +1,14 @@
 const express = require("express");
 const router = express.Router();
-const {
-  getHomePage,
-  getLoginPage,
-  getRegisterData,
-  getRegisterPage,
-  login,
-  logout,
-} = require("../controller/homeController");
+const homeController = require("../controller/homeController");
+
 const { check, body } = require("express-validator");
+const { isLogin } = require("../controller/auth");
 
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
 
-router.get("/", getHomePage);
+router.get("/", homeController.getHomePage);
 router.post(
   "/registeration",
   [
@@ -34,10 +29,10 @@ router.post(
       .custom((value, { req }) => value !== req.body.password)
       .withMessage("Passwords do not match"),
   ],
-  getRegisterData
+  homeController.getRegisterData
 );
 
-router.get("/registeration", getRegisterPage);
+router.get("/registeration", homeController.getRegisterPage);
 
 router.post(
   "/login",
@@ -48,11 +43,14 @@ router.post(
       .withMessage("Please enter Email!"),
     body("psw").notEmpty().withMessage("Please Enter Password!"),
   ],
-  login
+  homeController.login
 );
 
-router.get("/login", getLoginPage);
+router.get("/login", homeController.getLoginPage);
+router.post("/add-comment", isLogin, homeController.postComment);
 
-router.get("/logout", logout);
+router.get("/logout", homeController.logout);
+router.get("/search", homeController.getSearch);
+router.get("/:like/:postId", isLogin, homeController.getlikes);
 
 module.exports = router;

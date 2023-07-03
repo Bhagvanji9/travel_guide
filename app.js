@@ -16,7 +16,7 @@ app.set("views", path.join(__dirname, "views"));
 
 mongoose
   .connect(process.env.DB_URL)
-  .then((result) => {
+  .then((_result) => {
     console.log("database conncted!!!");
   })
   .catch((err) => console.log(err));
@@ -44,11 +44,11 @@ app.use("/", homeRoute);
 app.use("/user", userRoute);
 app.use("/guide", guideRoute);
 
-app.use((req, res, next) => {
-  const error = new Error("Page not found");
-  error.httpStatusCode = 404;
-  next(error);
-});
+// app.use((_req, _res, next) => {
+//   const error = new Error("Page not found");
+//   error.httpStatusCode = 404;
+//   next(error);
+// });
 
 app.use(err);
 

@@ -72,6 +72,8 @@ exports.getMyPost = async (req, res, next) => {
     nextPage: page + 1,
     previousPage: page - 1,
     lastPage: Math.ceil(numberOfPost / postInOnePage),
+    isFilter: false,
+    query: null,
   });
 };
 exports.getEditPost = async (req, res, next) => {

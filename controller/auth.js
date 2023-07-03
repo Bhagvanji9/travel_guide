@@ -15,3 +15,11 @@ exports.isAuth = async (req, res, next) => {
     return next(error);
   }
 };
+
+exports.isLogin = async (req, res, next) => {
+  if (req.session._id) {
+    next();
+  } else {
+    res.redirect("/login");
+  }
+};

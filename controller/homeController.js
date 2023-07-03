@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const { validationResult, Result } = require("express-validator");
+const mongoose = require("mongoose");
 const User = require("../model/user");
 const Post = require("../model/post");
 
@@ -10,11 +11,18 @@ exports.getHomePage = async (req, res, next) => {
     const page = +req.query.page || 1;
     const role = req.session.role;
     const numberOfPost = await Post.find().count();
+    let userId;
+    if (req.session._id) {
+      userId = req.session._id.toString();
+    } else {
+      userId = null;
+    }
     const posts = await Post.find()
       .skip((page - 1) * postInOnePage)
       .limit(postInOnePage);
     return res.render("home", {
       posts,
+      userId,
       isAuth,
       role,
       currentPage: page,
@@ -24,6 +32,8 @@ exports.getHomePage = async (req, res, next) => {
       nextPage: page + 1,
       previousPage: page - 1,
       lastPage: Math.ceil(numberOfPost / postInOnePage),
+      isFilter: false,
+      query: null,
     });
   } catch (err) {
     const error = new Error(err);
@@ -96,26 +106,7 @@ exports.login = async (req, res, next) => {
       req.session.isAuth = true;
       req.session._id = isValidUser[0]._id;
       req.session.role = isValidUser[0].role;
-
-      const isAuth = req.session.isAuth;
-      const page = +req.query.page || 1;
-      const role = req.session.role;
-      const numberOfPost = await Post.find().count();
-      const posts = await Post.find()
-        .skip((page - 1) * postInOnePage)
-        .limit(postInOnePage);
-      return res.render("home", {
-        posts,
-        isAuth,
-        role,
-        currentPage: page,
-        totalPosts: numberOfPost,
-        hasNextPage: postInOnePage * page < numberOfPost,
-        hasPreviousPage: page > 1,
-        nextPage: page + 1,
-        previousPage: page - 1,
-        lastPage: Math.ceil(numberOfPost / postInOnePage),
-      });
+      res.redirect("/");
     } else {
       req.flash("error", "Invalid Password!,please enter valid password");
       res.redirect("/login");
@@ -146,4 +137,91 @@ exports.logout = async (req, res) => {
     error.httpStatusCode = 500;
     return next(error);
   }
+};
+
+exports.postComment = async (req, res) => {
+  try {
+    const comment = req.body.comment;
+    const postId = req.body.postId;
+    const user = await User.findById(req.session._id);
+    const postObjectId = new mongoose.Types.ObjectId(postId);
+    const totalComments = await Post.aggregate([
+      { $match: { _id: postObjectId } },
+      {
+        $project: {
+          totalComments: { $size: "$comments" },
+        },
+      },
+    ]);
+    await Post.findByIdAndUpdate(postId, {
+      $set: {
+        totalComments: totalComments[0].totalComments + 1,
+      },
+      $push: {
+        comments: {
+          content: comment,
+          by: `${user.firstname} ${user.lastname} `,
+        },
+      },
+    });
+    return res.redirect("/");
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+exports.getSearch = async (req, res, next) => {
+  const { query } = req.query;
+  const isAuth = req.session.isAuth;
+  const page = +req.query.page || 1;
+  const role = req.session.role;
+
+  const numberOfPost = await Post.find(
+    { $text: { $search: query } },
+    { score: { $meta: "textScore" } }
+  ).count();
+
+  const filterPosts = await Post.find(
+    { $text: { $search: query } },
+    { score: { $meta: "textScore" } }
+  )
+    .sort({ score: { $meta: "textScore" } })
+    .skip((page - 1) * postInOnePage)
+    .limit(postInOnePage);
+
+  return res.render("home", {
+    posts: filterPosts,
+    isAuth,
+    role,
+    currentPage: page,
+    totalPosts: numberOfPost,
+    hasNextPage: postInOnePage * page < numberOfPost,
+    hasPreviousPage: page > 1,
+    nextPage: page + 1,
+    previousPage: page - 1,
+    lastPage: Math.ceil(numberOfPost / postInOnePage),
+    isFilter: true,
+    query: query,
+  });
+};
+
+exports.getlikes = async (req, res, next) => {
+  const postId = req.params.postId;
+  const action = req.originalUrl.split("/")[1];
+  const post = await Post.findById(postId);
+  const userId = req.session._id.toString();
+
+  await Post.findByIdAndUpdate(postId, {
+    $addToSet: {
+      [action]: userId,
+    },
+  });
+  if (post.likes.map((element) => element.toString()).includes(userId)) {
+    await Post.updateOne({ _id: postId }, { $pull: { likes: userId } });
+  } else if (
+    post.dislikes.map((element) => element.toString()).includes(userId)
+  ) {
+    await Post.updateOne({ _id: postId }, { $pull: { dislikes: userId } });
+  }
+  res.redirect("/");
 };
