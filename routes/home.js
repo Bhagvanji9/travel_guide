@@ -51,6 +51,6 @@ router.post("/add-comment", isLogin, homeController.postComment);
 
 router.get("/logout", homeController.logout);
 router.get("/search", homeController.getSearch);
-router.get("/:like/:postId", isLogin, homeController.getlikes);
+router.get("/:postId", isLogin, homeController.getlikes);
 
 module.exports = router;

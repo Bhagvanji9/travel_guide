@@ -207,7 +207,8 @@ exports.getSearch = async (req, res, next) => {
 
 exports.getlikes = async (req, res, next) => {
   const postId = req.params.postId;
-  const action = req.originalUrl.split("/")[1];
+  const action = req.query.action;
+  // const action = req.originalUrl.split("/")[1];
   const post = await Post.findById(postId);
   const userId = req.session._id.toString();
 

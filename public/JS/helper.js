@@ -1,3 +1,5 @@
+const { model } = require("mongoose");
+
 const deleteButton = document.querySelectorAll(".delete");
 
 deleteButton.forEach((element) => {
@@ -36,6 +38,8 @@ likeButton.forEach((element) => {
   const parent = element.parentElement.parentElement;
   const postId = parent.querySelector("#postId").value;
   element.addEventListener("click", async () => {
-    window.location = "http://localhost:3000/" + element.id + "/" + postId;
+    window.location =
+      "http://localhost:3000/" + postId + "?action=" + element.id;
+    10;
   });
 });
